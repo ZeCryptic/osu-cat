@@ -15,7 +15,7 @@ def close_window():
 
 root = Tk()
 root.resizable(width=False, height=False)
-root.title('osu!cat v0.1')
+root.title('osu!cat v1.0.0')
 root.protocol('WM_DELETE_WINDOW', close_window)
 
 screen_x = root.winfo_screenwidth()
@@ -84,7 +84,7 @@ image_label = Label(root, image=base_img) # ,textvariable=l_xyf, compound=CENTER
 image_label.image = base_img
 image_label.pack()
 
-print('Bongo Cat Live Cam v0.1')
+print('Bongo Cat Live Cam v1.0.0')
 print('----------------------------------------------------------------------------------------------------------------------')
 print('Disclaimer: There is a high probability you will experience som bugs or that the program will now work at all.\n'
       'This program will also most likely not work on resolutions where the height is bigger than the width, it will most\n'
