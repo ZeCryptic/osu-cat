@@ -33,6 +33,8 @@ ix_2 = ix_1 + screen_y/3
 iy_1 = screen_y/3
 iy_2 = iy_1 + screen_y/3
 
+d_bias = screen_x/8
+
 
 frame_points = {'A': (x_1, y_1),
                 'B': (x_2, y_1),
@@ -56,7 +58,6 @@ def find_distance(cx, cy, px, py):  # Calculates the distance from the cursor po
 
 
 def find_frame(cx, cy, f):
-    d_bias = 120
 
     best_d = [10000, 'NaN']
     for key, value in frame_points.items():
@@ -72,8 +73,36 @@ def find_frame(cx, cy, f):
 
     return best_d[1]
 
+print('Bongo Cat Live Cam v1.0.0')
+print('----------------------------------------------------------------------------------------------------------------------')
+print('Disclaimer: There is a high probability you will experience som bugs or that the program will now work at all.\n'
+      'This program will also most likely not work on resolutions where the height is bigger than the width, it will most\n'
+      'likely use much of your cpu and there is no support for custom ingame resolutions. You have been warned.')
+print('----------------------------------------------------------------------------------------------------------------------')
+print('Before you can use this program you need to configure key 1, key 2 and tablet/mouse')
+while True:
+    k1 = input('Key 1: ')
+    k2 = input('Key 2: ')
+    if len(k1) == 1 and len(k2) == 1:
+        break
+    else:
+        print('Keys can only be 1 character long')
 
-open_img = PIL.Image.open("cat/Hand A.png")
+print('(Type 0 for tablet and 1 for mouse)')
+while True:
+    i_type = input('Tablet or mouse: ')
+    if i_type == '0':
+        cursor_device = 'tablet'
+        break
+    elif i_type == '1':
+        cursor_device = 'mouse'
+        break
+    else:
+        print('Keys can only be 1 character long')
+
+print('All done! To reconfigure, just close and relaunch the application')
+
+open_img = PIL.Image.open("cat/{0}/Hand A.png".format(cursor_device))
 base_img = PIL.ImageTk.PhotoImage(open_img)
 hit1_img = PIL.Image.open("cat/KeyTapHand.png")
 hit2_img = PIL.Image.open("cat/KeyTapHand2.png")
@@ -84,25 +113,6 @@ image_label = Label(root, image=base_img) # ,textvariable=l_xyf, compound=CENTER
 image_label.image = base_img
 image_label.pack()
 
-print('Bongo Cat Live Cam v1.0.0')
-print('----------------------------------------------------------------------------------------------------------------------')
-print('Disclaimer: There is a high probability you will experience som bugs or that the program will now work at all.\n'
-      'This program will also most likely not work on resolutions where the height is bigger than the width, it will most\n'
-      'likely use much of your cpu and there is no support for custom ingame resolutions. You have been warned.')
-print('----------------------------------------------------------------------------------------------------------------------')
-print('Before you can use this program you need to configure what key 1 and key 2 you use for osu')
-
-while True:
-    k1 = input('Key 1: ')
-    k2 = input('Key 2: ')
-    if len(k1) == 1 and len(k2) == 1:
-        break
-    else:
-        print('Keys can only be 1 character long')
-
-print('All done! To reconfigure, just close and relaunch the application')
-
-
 f = 'A'
 last_hit = 0
 LOOP = True
@@ -112,7 +122,7 @@ while LOOP:
     x, y = GetCursorPos()
     f = find_frame(x, y, f)
 
-    n_open_img = PIL.Image.open("cat/Hand {0}.png".format(f))
+    n_open_img = PIL.Image.open("cat/{0}/Hand {1}.png".format(cursor_device, f))
 
     if k1_p or k2_p:
 
