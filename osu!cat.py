@@ -4,7 +4,6 @@ import PIL.Image
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
-from time import sleep
 
 
 def close_window():
@@ -161,5 +160,4 @@ while LOOP:
     image_label.image = n_base_img
 
     #l_xyf.set('x: ' + str(x) + ' ' + 'y: ' + str(y) + ' ' + 'frame: ' + f)  # Updates x, y and frame values
-    sleep(0.016)
     root.update()
