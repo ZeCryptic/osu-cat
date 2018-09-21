@@ -97,7 +97,7 @@ while True:
         cursor_device = 'mouse'
         break
     else:
-        print('Keys can only be 1 character long')
+        print('Invalid input')
 
 print('All done! To reconfigure, just close and relaunch the application')
 
