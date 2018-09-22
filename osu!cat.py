@@ -143,7 +143,7 @@ while LOOP:
             if k1_p:
 
                 final_hit_img = hit1_img
-                last_hit = 0
+                last_hit = 1
 
             elif k2_p:
 
