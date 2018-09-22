@@ -2,7 +2,6 @@ from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
 from win32gui import GetWindowText, GetForegroundWindow
-
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
