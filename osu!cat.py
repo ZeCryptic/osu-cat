@@ -1,6 +1,7 @@
 from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
+from PIL import Image
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
@@ -13,9 +14,12 @@ def close_window():
 
 
 root = Tk()
-root.resizable(width=False, height=False)
+root.resizable(width=True, height=True)
+root.maxsize(width=750, height=750)
+root.minsize(width=124, height=124)
 root.title('osu!cat v1.0.0')
 root.protocol('WM_DELETE_WINDOW', close_window)
+root.geometry('500x500')
 
 screen_x = root.winfo_screenwidth()
 screen_y = root.winfo_screenheight()
@@ -49,6 +53,13 @@ frame_points = {'A': (x_1, y_1),
                 'IC': (ix_1, iy_2),
                 'ID': (ix_2, iy_2)}
 
+def resize():
+    window_x = root.winfo_width()
+    window_y = root.winfo_height()
+    if window_x > window_y:
+        root.geometry('{0}x{0}'.format(window_x))
+    elif window_y > window_x:
+        root.geometry('{0}x{0}'.format(window_y))
 
 def find_distance(cx, cy, px, py):  # Calculates the distance from the cursor position to a point
     d = sqrt((px-cx)**2 + (py-cy)**2)  # Euclidean metric
@@ -122,7 +133,8 @@ while LOOP:
     f = find_frame(x, y, f)
 
     n_open_img = PIL.Image.open("cat/{0}/Hand {1}.png".format(cursor_device, f))
-
+    size = root.winfo_width(), root.winfo_height()
+    resize()
     if k1_p or k2_p:
 
         final_hit_img = hit1_img
@@ -132,7 +144,7 @@ while LOOP:
             if k1_p:
 
                 final_hit_img = hit1_img
-                last_hit = 1
+                last_hit = 0
 
             elif k2_p:
 
@@ -152,8 +164,10 @@ while LOOP:
                 last_hit = 1
 
         test_var = PIL.Image.alpha_composite(n_open_img, final_hit_img)
+        test_var.thumbnail(size, PIL.Image.ANTIALIAS)
         n_base_img = PIL.ImageTk.PhotoImage(test_var)
     else:
+        n_open_img.thumbnail(size, PIL.Image.ANTIALIAS)
         n_base_img = PIL.ImageTk.PhotoImage(n_open_img)
 
     image_label.configure(image=n_base_img)
