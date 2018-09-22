@@ -17,7 +17,6 @@ root = Tk()
 root.resizable(width=False, height=False)
 root.title('osu!cat v1.0.0')
 root.protocol('WM_DELETE_WINDOW', close_window)
-root.attributes('-topmost', True)
 
 screen_x = root.winfo_screenwidth()
 screen_y = root.winfo_screenheight()
