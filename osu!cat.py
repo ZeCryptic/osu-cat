@@ -4,6 +4,7 @@ import PIL.Image
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
+from time import sleep
 
 
 def close_window():
@@ -161,3 +162,4 @@ while LOOP:
 
     #l_xyf.set('x: ' + str(x) + ' ' + 'y: ' + str(y) + ' ' + 'frame: ' + f)  # Updates x, y and frame values
     root.update()
+    sleep(0.005)
