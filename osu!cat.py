@@ -57,10 +57,8 @@ def ontop():
         if root.state() == 'iconic':
             root.deiconify()
         root.attributes('-topmost', True)
-        root.update()
     else:
         root.attributes('-topmost', False)
-        root.update()
 
 
 def find_distance(cx, cy, px, py):  # Calculates the distance from the cursor position to a point
@@ -87,7 +85,7 @@ def find_frame(cx, cy, f):
 
 print('Bongo Cat Live Cam v1.0.0')
 print('----------------------------------------------------------------------------------------------------------------------')
-print('Disclaimer: There is a high probability you will experience som bugs or that the program will now work at all.\n'
+print('Disclaimer: There is a high probability you will experience some bugs or that the program will now work at all.\n'
       'This program will also most likely not work on resolutions where the height is bigger than the width, it will most\n'
       'likely use much of your cpu and there is no support for custom ingame resolutions. You have been warned.')
 print('----------------------------------------------------------------------------------------------------------------------')
@@ -112,6 +110,19 @@ while True:
     else:
         print('Invalid input')
 
+print('(Attach window to osu? This will keep the window open but unfocused so you can see it while playing.)')
+print('(Type 0 for yes and 1 for no)')
+while True:
+    attach_ans = input('Attach: ')
+    if attach_ans == '0':
+        attach = True
+        break
+    elif attach_ans == '1':
+        attach = False
+        break
+    else:
+        print('Invalid input')
+
 print('All done! To reconfigure, just close and relaunch the application')
 
 open_img = PIL.Image.open("cat/{0}/Hand A.png".format(cursor_device))
@@ -129,7 +140,8 @@ f = 'A'
 last_hit = 0
 LOOP = True
 while LOOP:
-    ontop()
+    if attach:
+        ontop()
 
     k1_p = is_pressed(k1)
     k2_p = is_pressed(k2)
