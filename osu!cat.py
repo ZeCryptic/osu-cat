@@ -1,6 +1,8 @@
 from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
+from win32gui import GetWindowText, GetForegroundWindow
+
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
@@ -11,11 +13,11 @@ def close_window():
     global LOOP
     LOOP = False
 
-
 root = Tk()
 root.resizable(width=False, height=False)
 root.title('osu!cat v1.0.0')
 root.protocol('WM_DELETE_WINDOW', close_window)
+root.attributes('-topmost', True)
 
 screen_x = root.winfo_screenwidth()
 screen_y = root.winfo_screenheight()
@@ -48,6 +50,17 @@ frame_points = {'A': (x_1, y_1),
                 'IB': (ix_2, iy_1),
                 'IC': (ix_1, iy_2),
                 'ID': (ix_2, iy_2)}
+
+def ontop():
+    active_window_name = GetWindowText(GetForegroundWindow())
+    if 'osu!' in active_window_name and 'osu!cat' not in active_window_name:
+        if root.state() == 'iconic':
+            root.deiconify()
+        root.attributes('-topmost', True)
+        root.update()
+    else:
+        root.attributes('-topmost', False)
+        root.update()
 
 
 def find_distance(cx, cy, px, py):  # Calculates the distance from the cursor position to a point
@@ -116,6 +129,8 @@ f = 'A'
 last_hit = 0
 LOOP = True
 while LOOP:
+    ontop()
+
     k1_p = is_pressed(k1)
     k2_p = is_pressed(k2)
     x, y = GetCursorPos()
