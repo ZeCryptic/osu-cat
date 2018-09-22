@@ -122,7 +122,7 @@ f = 'A'
 f_prev = f
 k1_p_prev = False
 k2_p_prev = False
-hit_prev = 1
+last_hit = 1
 LOOP = True
 while LOOP:
     sleep(0.005)
@@ -143,9 +143,9 @@ while LOOP:
         elif (k2_p and not k2_p_prev) or (not k1_p and k1_p_prev):
             final_hit = 2
         else:
-            final_hit = hit_prev
+            final_hit = last_hit
     
-        hit_prev = final_hit
+        last_hit = final_hit
         final_hit_img = hit_images[final_hit]
         test_var = PIL.Image.alpha_composite(base_img, final_hit_img)
         n_base_img = PIL.ImageTk.PhotoImage(test_var)
