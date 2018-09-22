@@ -1,7 +1,6 @@
 from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
-from PIL import Image
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
