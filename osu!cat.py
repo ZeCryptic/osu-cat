@@ -7,7 +7,7 @@ from math import sqrt
 from time import sleep
 from sys import exit
 
-version = 'v1.1.1'
+version = 'v1.2.0'
 
 start = False
 drag = False
@@ -107,7 +107,7 @@ print('Disclaimer: There is a high probability you will experience some bugs or 
       'This program will also most likely not work on resolutions where the height is bigger than the width and there\n'
       'is no support for custom ingame resolutions or sensitivities. You have been warned.')
 print('----------------------------------------------------------------------------------------------------------------------')
-print('Before you can use this program you need to configure key 1, key 2, tablet/mouse and window size')
+print('Before you can use this program you need to configure some things')
 while True:
     k1 = input('Key 1: ')
     k2 = input('Key 2: ')
@@ -121,10 +121,22 @@ while True:
     i_type = input('Tablet or mouse: ')
     if i_type == '0':
         cursor_device = 'tablet'
-        start = True
         break
     elif i_type == '1':
         cursor_device = 'mouse'
+        break
+    else:
+        print('Invalid input')
+
+print('(Type 0 for no and 1 for yes)')
+while True:
+    i_type = input('Use chroma key green background?: ')
+    if i_type == '0':
+        background = 'standard'
+        start = True
+        break
+    elif i_type == '1':
+        background = 'green'
         start = True
         break
     else:
@@ -142,7 +154,7 @@ hit_images = {
 
 cursor_images = {}
 for key in frame_points.keys():
-    cursor_images[key] = PIL.Image.open("cat/{0}/Hand {1}.png".format(cursor_device, key))
+    cursor_images[key] = PIL.Image.open("cat/{0}/{1}/Hand {2}.png".format(cursor_device, background, key))
 
 default_img = PIL.ImageTk.PhotoImage(cursor_images['A'])
 image_label = Label(root, image=default_img)
