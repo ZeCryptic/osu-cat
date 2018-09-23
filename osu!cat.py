@@ -141,7 +141,7 @@ while LOOP:
     k2_p = is_pressed(k2)
     x, y = GetCursorPos()
     f = find_frame(x, y, f)
-    
+
     if f == f_prev and k1_p == k1_p_prev and k2_p == k2_p_prev:
         continue
 
@@ -155,7 +155,7 @@ while LOOP:
             final_hit = 2
         else:
             final_hit = last_hit
-    
+
         last_hit = final_hit
         final_hit_img = hit_images[final_hit]
         test_var = PIL.Image.alpha_composite(base_img, final_hit_img)
@@ -166,7 +166,7 @@ while LOOP:
     f_prev = f
     k1_p_prev = k1_p
     k2_p_prev = k2_p
-    
+
     image_label.configure(image=n_base_img)
     image_label.image = n_base_img
 
