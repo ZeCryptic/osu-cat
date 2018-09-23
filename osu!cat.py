@@ -4,7 +4,9 @@ import PIL.Image
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
+from time import sleep
 
+version = 'v1.1.1'
 
 def close_window():
     root.withdraw()
@@ -14,7 +16,7 @@ def close_window():
 
 root = Tk()
 root.resizable(width=False, height=False)
-root.title('osu!cat v1.0.0')
+root.title('osu!cat ' + version)
 root.protocol('WM_DELETE_WINDOW', close_window)
 
 screen_x = root.winfo_screenwidth()
@@ -72,13 +74,13 @@ def find_frame(cx, cy, f):
 
     return best_d[1]
 
-print('Bongo Cat Live Cam v1.0.0')
+print('Bongo Cat Live Cam ' + version)
 print('----------------------------------------------------------------------------------------------------------------------')
-print('Disclaimer: There is a high probability you will experience som bugs or that the program will now work at all.\n'
-      'This program will also most likely not work on resolutions where the height is bigger than the width, it will most\n'
-      'likely use much of your cpu and there is no support for custom ingame resolutions. You have been warned.')
+print('Disclaimer: There is a high probability you will experience some bugs or that the program will now work at all.\n'
+      'This program will also most likely not work on resolutions where the height is bigger than the width and there\n'
+      'is no support for custom ingame resolutions or sensitivities. You have been warned.')
 print('----------------------------------------------------------------------------------------------------------------------')
-print('Before you can use this program you need to configure key 1, key 2 and tablet/mouse')
+print('Before you can use this program you need to configure key 1, key 2, tablet/mouse and window size')
 while True:
     k1 = input('Key 1: ')
     k2 = input('Key 2: ')
@@ -99,65 +101,73 @@ while True:
     else:
         print('Invalid input')
 
+print('(Type 0 for small and 1 for standard)')
+while True:
+    i_type = input('Window size: ')
+    if i_type == '0':
+        size = (320, 320)
+        break
+    elif i_type == '1':
+        size = (640, 640)
+        break
+    else:
+        print('Invalid input')
+
 print('All done! To reconfigure, just close and relaunch the application')
 
-open_img = PIL.Image.open("cat/{0}/Hand A.png".format(cursor_device))
-base_img = PIL.ImageTk.PhotoImage(open_img)
-hit1_img = PIL.Image.open("cat/KeyTapHand.png")
-hit2_img = PIL.Image.open("cat/KeyTapHand2.png")
+#preload all images
+hit_images = {
+    1: PIL.Image.open("cat/KeyTapHand1.png").resize(size),
+    2: PIL.Image.open("cat/KeyTapHand2.png").resize(size)
+}
+cursor_images = { }
+for key in frame_points.keys():
+    cursor_images[key] = PIL.Image.open("cat/{0}/Hand {1}.png".format(cursor_device, key)).resize(size)
 
-#l_xyf = StringVar()  # Label string for x and y cursor position + current base frame
-
-image_label = Label(root, image=base_img) # ,textvariable=l_xyf, compound=CENTER)
-image_label.image = base_img
+default_img = PIL.ImageTk.PhotoImage(cursor_images['A'])
+image_label = Label(root, image=default_img)
+image_label.image = default_img
 image_label.pack()
 
 f = 'A'
-last_hit = 0
+f_prev = f
+k1_p_prev = False
+k2_p_prev = False
+last_hit = 1
 LOOP = True
 while LOOP:
+    sleep(0.005)
     k1_p = is_pressed(k1)
     k2_p = is_pressed(k2)
     x, y = GetCursorPos()
     f = find_frame(x, y, f)
+    
+    if f == f_prev and k1_p == k1_p_prev and k2_p == k2_p_prev:
+        continue
 
-    n_open_img = PIL.Image.open("cat/{0}/Hand {1}.png".format(cursor_device, f))
+    base_img = cursor_images[f]
 
     if k1_p or k2_p:
 
-        final_hit_img = hit1_img
-
-        if last_hit == 0:
-
-            if k1_p:
-
-                final_hit_img = hit1_img
-                last_hit = 1
-
-            elif k2_p:
-
-                final_hit_img = hit2_img
-                last_hit = 0
-
-        elif last_hit == 1:
-
-            if k2_p:
-
-                final_hit_img = hit2_img
-                last_hit = 0
-
-            elif k1_p:
-
-                final_hit_img = hit1_img
-                last_hit = 1
-
-        test_var = PIL.Image.alpha_composite(n_open_img, final_hit_img)
+        if (k1_p and not k1_p_prev) or (not k2_p and k2_p_prev):
+            final_hit = 1
+        elif (k2_p and not k2_p_prev) or (not k1_p and k1_p_prev):
+            final_hit = 2
+        else:
+            final_hit = last_hit
+    
+        last_hit = final_hit
+        final_hit_img = hit_images[final_hit]
+        test_var = PIL.Image.alpha_composite(base_img, final_hit_img)
         n_base_img = PIL.ImageTk.PhotoImage(test_var)
     else:
-        n_base_img = PIL.ImageTk.PhotoImage(n_open_img)
+        n_base_img = PIL.ImageTk.PhotoImage(base_img)
 
+    f_prev = f
+    k1_p_prev = k1_p
+    k2_p_prev = k2_p
+    
     image_label.configure(image=n_base_img)
     image_label.image = n_base_img
 
-    #l_xyf.set('x: ' + str(x) + ' ' + 'y: ' + str(y) + ' ' + 'frame: ' + f)  # Updates x, y and frame values
     root.update()
