@@ -10,7 +10,8 @@ from sys import exit
 version = 'v1.1.1'
 
 start = False
-dragged = False
+drag = False
+drag_id = ''
 
 def close_window():
     root.withdraw()
@@ -24,18 +25,21 @@ def resize():
     elif window_y > window_x:
         root.geometry('{0}x{0}'.format(window_y))
 
-def unpause():
-    global dragged
-    if dragged:
-        dragged = False
-        root.after(10, iterate)
+def dragging(event):
+    global drag_id
+    global drag
+    if drag_id == '':
+        pass
+    else:
+        root.after_cancel(drag_id)
+        drag = True
+    drag_id = root.after(100, stop_drag)
 
-def pause(event):
-    global dragged
-    resize()
-    if not dragged:
-        dragged = True
-        root.after(5, unpause)
+def stop_drag():
+    global drag_id
+    global drag
+    drag = False
+    drag_id = ''
 
 root = Tk()
 root.resizable(width=True, height=True)
@@ -136,7 +140,7 @@ hit_images = {
     2: PIL.Image.open("cat/KeyTapHand2.png")
 }
 
-cursor_images = { }
+cursor_images = {}
 for key in frame_points.keys():
     cursor_images[key] = PIL.Image.open("cat/{0}/Hand {1}.png".format(cursor_device, key))
 
@@ -156,8 +160,10 @@ force_update = True
 last_hit = 1
 
 def iterate():
-    global f, f_prev, k1_p_prev, k2_p_prev, last_hit, dragged, w_size_prev, w_size, first_iteration, force_update
-
+    global f, f_prev, k1_p_prev, k2_p_prev, last_hit, drag, w_size_prev, w_size, first_iteration, force_update
+    if drag:
+        root.after(5, iterate)
+        return
 
     k1_p = is_pressed(k1)
     k2_p = is_pressed(k2)
@@ -167,7 +173,7 @@ def iterate():
     base_img = cursor_images[f]
 
     def forceUpdate():
-        base_img = cursor_images[f].resize((root.winfo_width(),root.winfo_height()), PIL.Image.ANTIALIAS)
+        base_img = cursor_images[f].resize((root.winfo_width(), root.winfo_height()), PIL.Image.ANTIALIAS)
         n_base_img = PIL.ImageTk.PhotoImage(base_img)
         image_label.configure(image=n_base_img)
         image_label.image = n_base_img
@@ -177,13 +183,13 @@ def iterate():
         first_iteration = False
         forceUpdate()
         root.after(0, iterate)
-        return;
+        return
 
     resize()
 
     if f == f_prev and k1_p == k1_p_prev and k2_p == k2_p_prev:
         root.after(5, iterate)
-        return;
+        return
 
     if k1_p or k2_p:
         force_update = True
@@ -196,11 +202,11 @@ def iterate():
 
         last_hit = final_hit
         final_hit_img = hit_images[final_hit]
-        test_var = PIL.Image.alpha_composite(base_img, final_hit_img)
-        test_var.thumbnail((root.winfo_width(),root.winfo_height()), PIL.Image.ANTIALIAS)
-        n_base_img = PIL.ImageTk.PhotoImage(test_var)
+        composite_image = PIL.Image.alpha_composite(base_img, final_hit_img)
+        composite_image.thumbnail((root.winfo_width(), root.winfo_height()), PIL.Image.ANTIALIAS)
+        n_base_img = PIL.ImageTk.PhotoImage(composite_image)
     else:
-        base_img = base_img.resize((root.winfo_width(),root.winfo_height()), PIL.Image.ANTIALIAS)
+        base_img = base_img.resize((root.winfo_width(), root.winfo_height()), PIL.Image.ANTIALIAS)
         n_base_img = PIL.ImageTk.PhotoImage(base_img)
 
     f_prev = f
@@ -213,5 +219,6 @@ def iterate():
     root.after(5, iterate)
 
 if start:
+    root.bind('<Configure>', dragging)
     root.after(0, iterate)
     root.mainloop()
