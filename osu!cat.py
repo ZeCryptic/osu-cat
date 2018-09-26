@@ -2,10 +2,11 @@ from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
 from keyboard import is_pressed
-from win32gui import GetCursorPos
 from math import sqrt
 from time import sleep
-from sys import exit
+from sys import exit, platform
+if platform == 'win32':
+    from win32gui import GetCursorPos
 
 version = 'v1.2.0'
 
@@ -179,7 +180,10 @@ def iterate():
 
     k1_p = is_pressed(k1)
     k2_p = is_pressed(k2)
-    x, y = GetCursorPos()
+    if platform == 'win32':
+        x, y = GetCursorPos()
+    else:
+        x, y = root.winfo_pointerxy()
     f = find_frame(x, y, f)
 
     base_img = cursor_images[f]
