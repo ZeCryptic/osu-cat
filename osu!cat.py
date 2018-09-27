@@ -111,10 +111,11 @@ print('Before you can use this program you need to configure some things')
 while True:
     k1 = input('Key 1: ')
     k2 = input('Key 2: ')
-    if len(k1) == 1 and len(k2) == 1:
-        break
+    arrowKeys = ["up", "down", "left", "right"]
+    if len(k1) == 0 or k1 in arrowKeys and len(k2) == 0 or k2 in arrowKeys:
+        break;
     else:
-        print('Keys can only be 1 character long')
+        print('Keys can only be 1 character long, or arrow keys such as \'up\', \'right\', \'left\', or \'down\'')
 
 print('(Type 0 for tablet and 1 for mouse)')
 while True:
