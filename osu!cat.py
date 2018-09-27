@@ -112,7 +112,7 @@ while True:
     k1 = input('Key 1: ')
     k2 = input('Key 2: ')
     arrowKeys = ["up", "down", "left", "right"]
-    if len(k1) == 0 or k1 in arrowKeys and len(k2) == 0 or k2 in arrowKeys:
+    if len(k1) == 1 or k1 in arrowKeys and len(k2) == 1 or k2 in arrowKeys:
         break;
     else:
         print('Keys can only be 1 character long, or arrow keys such as \'up\', \'right\', \'left\', or \'down\'')
