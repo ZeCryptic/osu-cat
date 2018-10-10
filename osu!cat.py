@@ -2,6 +2,7 @@ from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
 from keyboard import is_pressed
+from win32 import win32gui
 from win32gui import GetCursorPos
 from math import sqrt
 from time import sleep
@@ -108,13 +109,16 @@ print('Disclaimer: There is a high probability you will experience some bugs or 
       'is no support for custom ingame resolutions or sensitivities. You have been warned.')
 print('----------------------------------------------------------------------------------------------------------------------')
 print('Before you can use this program you need to configure some things')
-while True:
-    k1 = input('Key 1: ')
-    k2 = input('Key 2: ')
-    if len(k1) == 1 and len(k2) == 1:
-        break
-    else:
-        print('Keys can only be 1 character long')
+key_list = list()
+n = 0
+print('Keep putting 1-letter keys and write \'done\' once you\'re done')
+while True :
+    temp = input('take a letter? ')
+    if (temp == 'done') : break
+    elif len(temp) == 1 :
+        key_list.append(temp)
+        n = n + 1
+    else : print('Keys can only be 1 character long')
 
 print('(Type 0 for tablet and 1 for mouse)')
 while True:
@@ -143,7 +147,7 @@ while True:
         print('Invalid input')
 
 print('All done! To reconfigure, just close and relaunch the application')
-print('Note: When re-sizing, hit k1 or k2 to reload the image!')
+print('Note: When re-sizing, hit one of your keys to reload the image!')
 
 
 #preload all images
@@ -170,15 +174,20 @@ k2_p_prev = False
 first_iteration = True
 force_update = True
 last_hit = 1
-
+global key_list_p_prev 
+key_list_p_prev = list()
+for i in range(n) :
+    key_list_p_prev.append(False)
 def iterate():
-    global f, f_prev, k1_p_prev, k2_p_prev, last_hit, drag, w_size_prev, w_size, first_iteration, force_update
+    global f, f_prev, key_list_p_prev, last_hit, drag, w_size_prev, w_size, first_iteration, force_update
     if drag:
         root.after(5, iterate)
         return
-
-    k1_p = is_pressed(k1)
-    k2_p = is_pressed(k2)
+    key_list_p = list()
+    for i in range(n) :
+        key_list_p.append(is_pressed(key_list[i]))
+    #k1_p = is_pressed(k1)
+    #k2_p = is_pressed(k2)
     x, y = GetCursorPos()
     f = find_frame(x, y, f)
 
@@ -198,20 +207,21 @@ def iterate():
         return
 
     resize()
-
-    if f == f_prev and k1_p == k1_p_prev and k2_p == k2_p_prev:
+    all_keys_are_same = True
+    for i in range(n) :
+        if key_list_p_prev[i] != key_list_p[i] :
+            all_keys_are_same = False
+            break
+    if f == f_prev and all_keys_are_same == True:
         root.after(5, iterate)
         return
 
-    if k1_p or k2_p:
+    a_key_is_pressed = False
+    final_hit = 1
+    for i in range(n) :
+        if key_list_p[i] : a_key_is_pressed = True
+    if a_key_is_pressed :
         force_update = True
-        if (k1_p and not k1_p_prev) or (not k2_p and k2_p_prev):
-            final_hit = 1
-        elif (k2_p and not k2_p_prev) or (not k1_p and k1_p_prev):
-            final_hit = 2
-        else:
-            final_hit = last_hit
-
         last_hit = final_hit
         final_hit_img = hit_images[final_hit]
         composite_image = PIL.Image.alpha_composite(base_img, final_hit_img)
@@ -222,8 +232,8 @@ def iterate():
         n_base_img = PIL.ImageTk.PhotoImage(base_img)
 
     f_prev = f
-    k1_p_prev = k1_p
-    k2_p_prev = k2_p
+    for i in range(n) :
+        key_list_p_prev[i] = key_list_p[i]
 
     image_label.configure(image=n_base_img)
     image_label.image = n_base_img
