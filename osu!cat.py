@@ -109,13 +109,6 @@ print('Disclaimer: There is a high probability you will experience some bugs or 
       'is no support for custom ingame resolutions or sensitivities. You have been warned.')
 print('----------------------------------------------------------------------------------------------------------------------')
 print('Before you can use this program you need to configure some things')
-#while True:
-#    k1 = input('Key 1: ')
-#    k2 = input('Key 2: ')
-#    if len(k1) == 1 and len(k2) == 1:
-#       break
-#    else:
-#        print('Keys can only be 1 character long')
 key_list = list()
 n = 0
 print('Keep putting 1-letter keys and write \'done\' once you\'re done')
@@ -127,19 +120,18 @@ while True :
         n = n + 1
     else : print('Keys can only be 1 character long')
 
-#print('(Type 0 for tablet and 1 for mouse)')
-#while True:
-#    i_type = input('Tablet or mouse: ')
-#    if i_type == '0':
-#        cursor_device = 'tablet'
-#        break
-#    elif i_type == '1':
-#        cursor_device = 'mouse'
-#        break
-#    else:
-#        print('Invalid input')
-#
-cursor_device = 'mouse'
+print('(Type 0 for tablet and 1 for mouse)')
+while True:
+    i_type = input('Tablet or mouse: ')
+    if i_type == '0':
+        cursor_device = 'tablet'
+        break
+    elif i_type == '1':
+        cursor_device = 'mouse'
+        break
+    else:
+        print('Invalid input')
+
 print('(Type 0 for no and 1 for yes)')
 while True:
     i_type = input('Use chroma key green background?: ')
