@@ -1,6 +1,7 @@
 from tkinter import Tk, Label
 import PIL.ImageTk
 import PIL.Image
+import win32api
 from keyboard import is_pressed
 from win32gui import GetCursorPos
 from math import sqrt
@@ -11,6 +12,7 @@ version = 'v1.2.0'
 
 start = False
 drag = False
+mouse_clicker = False
 drag_id = ''
 
 def close_window():
@@ -115,7 +117,6 @@ while True:
         break
     else:
         print('Keys can only be 1 character long')
-
 print('(Type 0 for tablet and 1 for mouse)')
 while True:
     i_type = input('Tablet or mouse: ')
@@ -127,6 +128,18 @@ while True:
         break
     else:
         print('Invalid input')
+if i_type == '1':
+    print('You have selected mouse, type 0 for not a mouse clicker, type 1 if you are a mouse clicker')
+    while True:
+        mouse_clicker_check = input('Mouse clicker, yay or nay?: ')
+        if mouse_clicker_check == '0':
+            mouse_clicker = False
+            break
+        elif mouse_clicker_check == '1':
+            mouse_clicker = True
+            break
+        else:
+            print('Invalid input')
 
 print('(Type 0 for no and 1 for yes)')
 while True:
@@ -176,9 +189,13 @@ def iterate():
     if drag:
         root.after(5, iterate)
         return
+    if mouse_clicker:
+        k1_p = win32api.GetAsyncKeyState(0x01)
+        k2_p = win32api.GetAsyncKeyState(0x02)
+    else:
+        k1_p = is_pressed(k1)
+        k2_p = is_pressed(k2)
 
-    k1_p = is_pressed(k1)
-    k2_p = is_pressed(k2)
     x, y = GetCursorPos()
     f = find_frame(x, y, f)
 
