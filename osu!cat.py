@@ -103,7 +103,7 @@ def find_frame(cx, cy, f):
 
 print('Bongo Cat Live Cam ' + version)
 print('----------------------------------------------------------------------------------------------------------------------')
-print('Disclaimer: There is a high probability you will experience some bugs or that the program will now work at all.\n'
+print('Disclaimer: There is a high probability you will experience some bugs or that the program will not work at all.\n'
       'This program will also most likely not work on resolutions where the height is bigger than the width and there\n'
       'is no support for custom ingame resolutions or sensitivities. You have been warned.')
 print('----------------------------------------------------------------------------------------------------------------------')
